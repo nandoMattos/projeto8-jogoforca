@@ -1,15 +1,25 @@
 import React from "react"
 
-function oi() {
-    console.log('oi')
-}
+export default function Letter({ wordArray, letter, index}) {
+    let [buttonState, setButtonState] = React.useState("")
 
-export default function Letter({letter}) {
+    function clickLetter(letter) {
+        disableLetter()
+
+        for(let position in wordArray){
+            if(wordArray[position] === letter){
+                // showLetter(position, letter)
+            }
+        }
+    }
+
+    function disableLetter() {
+        setButtonState("disabled")
+    }
+
     return(
-        <div className="letter">
-            <button onClick={oi}>
-                {letter.toUpperCase()}
-            </button>
-        </div>
+        <button id={index} disabled={buttonState} onClick={()=>clickLetter(letter)}>
+            {letter.toUpperCase()}
+        </button>
     )
-}
+}   
