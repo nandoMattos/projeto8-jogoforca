@@ -1,56 +1,82 @@
-import { useState } from "react";
-// import Letter from "./Letter";
+import { useEffect, useState } from "react";
 import palavras from "./palavras";
 
 
 export default function App() {
     const alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-
+    const [buttonText, setButtonText] = useState("Escolher palavra")
     const [enableAllLetters, setEnableAllLetters] = useState(false)
     const [usedLetters, setUsedLetters] = useState([])
+    const [word, setWord] = useState("");
     const [wordOnScreen, setwordOnScreen] = useState("");
-    
-    const [word, setWord] = useState(palavras[Math.floor(Math.random() * palavras.length)]);
+    const [colorWordScreen, setColorWordScreen] = useState("");
+    const [mistakesCount, setMistakesCount] = useState(0);
+
+    function resestVariables() {
+        setEnableAllLetters(true)
+        setUsedLetters([]);
+        setColorWordScreen("");
+        setMistakesCount(0);
+    }
 
     function startGame() {
-        setEnableAllLetters(true)
-        console.log(word)
-        // get a random word
-        // setWord(palavras[Math.floor(Math.random() * palavras.length)])
-        // console.log(word)
+        resestVariables()
 
+        // get a random word
+        let randomWord = palavras[Math.floor(Math.random() * palavras.length)]
+        setWord(randomWord)
+        console.log(randomWord)
+    
         // transform the word into an array and set it
-        let wordArray = word.split('')
-        if (wordArray) setwordOnScreen(wordArray.map(()=>"_"))
+        setwordOnScreen((randomWord.split('')).map(()=>"_"))
     }
 
     function disableLetter(index) {
         setUsedLetters([...usedLetters, index])
     }
 
+    function checkGameStatus() {
+        // check if user lost the game
+        if(mistakesCount >= 5) {
+            setEnableAllLetters(false)
+            setwordOnScreen(word)
+            setColorWordScreen("red")
+            setButtonText("Mudar palavra")
+        }
+
+        // check if user won the game
+        if(wordOnScreen.join("") === word) {
+            setEnableAllLetters(false)
+            setColorWordScreen("green")
+            setButtonText("Mudar palavra")
+        }
+    }
+
     function clickLetter(letter, index) {
         disableLetter(index)
-        console.log(alphabet[index], index)
-        for (let i in word) {
-            if(word[i] === letter) {
-                let newWord = wordOnScreen
-                newWord[i] = letter
+        if (word.includes(letter)) {
+            for (let i in word) {
+                if(word[i] === letter) {
+                    let newWordScreen = wordOnScreen
+                    newWordScreen[i] = letter
+                }
             }
+        } else {
+            setMistakesCount(mistakesCount + 1)
         }
-        // let array = word.split('')
-        // console.log(array)
-        // for(let )
+        
+        checkGameStatus()
     }
 
     return(
         <main>
             <div className="top">
-                <img src="assets/forca0.png" alt="forca"/>
+                <img src={`assets/forca${mistakesCount}.png`}/>
     
                 <div className="right-content">
-                    <button onClick={startGame}>Escolher palavra</button>
+                    <button onClick={startGame}>{buttonText}</button>
 
-                    <div className="word">
+                    <div className={`word ${colorWordScreen}`} >
                         {wordOnScreen}
                     </div>
                 </div>
@@ -61,12 +87,12 @@ export default function App() {
                 <div className="keyboard">
                     { enableAllLetters === false ?
                         alphabet.map((letter, index)=>
-                            <button disabled onClick={()=>clickLetter(letter,index)}>
+                            <button onClick={()=>clickLetter(letter,index)} disabled>
                                 {letter.toUpperCase()}
                             </button> 
                         ):
                         alphabet.map((letter,index)=>
-                            <button disabled={usedLetters.includes(index) ? "disabled" : ""} onClick={()=>clickLetter(letter,index)}>
+                            <button onClick={()=>clickLetter(letter,index)} disabled={usedLetters.includes(index) ? "disabled" : ""}>
                                 {letter.toUpperCase()}
                             </button>
                         )
