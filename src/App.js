@@ -11,6 +11,7 @@ export default function App() {
     const [wordOnScreen, setwordOnScreen] = useState("");
     const [colorWordScreen, setColorWordScreen] = useState("");
     const [mistakesCount, setMistakesCount] = useState(0);
+    const [input, setInput] = useState();
 
     function resestVariables() {
         setEnableAllLetters(true)
@@ -86,6 +87,7 @@ export default function App() {
                 case "o": possibleAcents = ["o", "ó", "ô"]; break;
                 case "u": possibleAcents = ["u", "ú"]; break;
                 case "c": possibleAcents = ["c", "ç"]; break
+                default: possibleAcents = null;
             }
             possibleAcents ? searchLetterInWord(possibleAcents) : searchLetterInWord(letter)
         } else {
@@ -94,6 +96,23 @@ export default function App() {
         }
 
         checkGameStatus(mistakesCountNow)
+    }
+
+    function takeShot() {
+        if(input){
+            let formatedInput = input.normalize("NFD").replace(/[^a-zA-Z\s]/g, "").toLowerCase();
+            let formatedWord = word.normalize("NFD").replace(/[^a-zA-Z\s]/g, "").toLowerCase();
+            setEnableAllLetters(false)
+            setButtonText("Começar")
+            setwordOnScreen(word)
+            if (formatedInput === formatedWord){
+                setColorWordScreen("green")
+            } else {
+                setColorWordScreen("red")
+                setMistakesCount(6);
+            } 
+            setInput("");
+        }
     }
 
     return(
@@ -108,7 +127,6 @@ export default function App() {
                         {wordOnScreen}
                     </div>
                 </div>
-
             </div>
 
             <div className="bottom">
@@ -125,14 +143,12 @@ export default function App() {
                             </button>
                         )
                     }
-                     
-                        
                 </div>
 
                 <div className="input-container">
                     Já sei a palavra!
-                    <input type="text"/>
-                    <button>Chutar</button>
+                    <input onChange={e => setInput(e.target.value)} value={input} type="text"/>
+                    <button onClick={takeShot} disabled={enableAllLetters ? "" : "disabled"}>Chutar</button>
               </div>
             </div>
         </main>
