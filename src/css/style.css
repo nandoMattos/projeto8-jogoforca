@@ -55,6 +55,10 @@ main{
     margin-left: 40px;
 }
 
+.top .right-content .word {
+    font-weight: bold;
+}
+
 .bottom{
     width: 70%;
     margin: 0 auto;

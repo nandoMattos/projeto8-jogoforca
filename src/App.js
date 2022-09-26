@@ -19,6 +19,7 @@ export default function App() {
         setColorWordScreen("");
         setMistakesCount(0);
         setButtonText("Escolher palavra")
+        setInput("");
     }
 
     function startGame() {
@@ -118,12 +119,14 @@ export default function App() {
     return(
         <main>
             <div className="top">
-                <img src={`assets/forca${mistakesCount}.png`} alt="forca"/>
+                <img src={`assets/forca${mistakesCount}.png`} alt="forca" data-identifier="game-image"/>
     
                 <div className="right-content">
-                    <button onClick={startGame}>{buttonText}</button>
+                    <button onClick={startGame} data-identifier="choose-word">
+                        {buttonText}
+                    </button>
 
-                    <div className={`word ${colorWordScreen}`} >
+                    <div className={`word ${colorWordScreen}`} data-identifier="word">
                         {wordOnScreen}
                     </div>
                 </div>
@@ -133,12 +136,12 @@ export default function App() {
                 <div className="keyboard">
                     { enableAllLetters === false ?
                         alphabet.map((letter, index)=>
-                            <button onClick={()=>clickLetter(letter,index)} disabled key={index}>
+                            <button onClick={()=>clickLetter(letter,index)} disabled key={index} data-identifier="letter"> 
                                 {letter.toUpperCase()}
                             </button> 
                         ):
                         alphabet.map((letter,index)=>
-                            <button onClick={()=>clickLetter(letter,index)} disabled={usedLetters.includes(index) ? "disabled" : ""} key={index}>
+                            <button onClick={()=>clickLetter(letter,index)} disabled={usedLetters.includes(index) ? "disabled" : ""} key={index} data-identifier="letter">
                                 {letter.toUpperCase()}
                             </button>
                         )
@@ -147,8 +150,8 @@ export default function App() {
 
                 <div className="input-container">
                     Já sei a palavra!
-                    <input onChange={e => setInput(e.target.value)} value={input} type="text"/>
-                    <button onClick={takeShot} disabled={enableAllLetters ? "" : "disabled"}>Chutar</button>
+                    <input onChange={e => setInput(e.target.value)} value={input} type="text" data-identifier="type-guess"/>
+                    <button onClick={takeShot} disabled={enableAllLetters ? "" : "disabled"} data-identifier="guess-button">Chutar</button>
               </div>
             </div>
         </main>
